@@ -1,6 +1,7 @@
 <script setup>
 import { RouterView } from "vue-router";
 import SplashScreen from '@/components/ui/SplashScreen.vue'
+import HeroSection from "./components/sections/HeroSection.vue";
 </script>
 
 
@@ -8,7 +9,7 @@ import SplashScreen from '@/components/ui/SplashScreen.vue'
 <template>
   <!-- El componente que acabamos de crear -->
   <SplashScreen />
-
+  <HeroSection />
   <!-- El resto de tu aplicación -->
   <main class="app-content">
     <RouterView />
@@ -29,5 +30,6 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  font-family: "Poppins", sans-serif;
 }
 </style>

@@ -8,10 +8,7 @@ const logoElement = ref<HTMLElement | null>(null)
 onMounted(() => {
     document.body.style.overflow = 'hidden'
 
-    // EL TRUCO ESTÁ AQUÍ:
-    // Como la imagen ahora es masiva (ej. 4000px en CSS), la encogemos 
-    // inmediatamente a un 3% (0.03) para que se vea de tamaño normal en la pantalla.
-    gsap.set(logoElement.value, { scale: 0.03 })
+    gsap.set(logoElement.value, { scale: 0.10 })
 
     const tl = gsap.timeline({
         onComplete: () => {
@@ -42,8 +39,7 @@ onMounted(() => {
     <!-- Contenedor principal que cubre toda la pantalla -->
     <div ref="splashContainer" class="splash-screen">
         <!-- Tu logo (Asegúrate de tener un SVG o PNG sin fondo) -->
-        <img ref="logoElement" src="@/assets/Logo blanco completo sin fondo .png" alt="Dra. María Fernanda"
-            class="splash-logo" />
+        <img ref="logoElement" src="../../assets/LogoDiente.png" alt="Dra. María Fernanda" class="splash-logo" />
     </div>
 </template>
 
@@ -63,7 +59,7 @@ onMounted(() => {
 
 .splash-logo {
     /* Le damos un tamaño nativo gigantesco para que el navegador renderice en alta calidad */
-    width: 4000px;
+    width: 5000px;
     max-width: none;
     /* Vital: Evita que el navegador la auto-reduzca */
     will-change: transform;
