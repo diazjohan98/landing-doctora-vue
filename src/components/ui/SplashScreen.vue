@@ -8,12 +8,9 @@ const logoElement = ref<HTMLElement | null>(null)
 onMounted(() => {
     document.body.style.overflow = 'hidden'
 
-    // 1. Detectamos si es un dispositivo móvil (menor o igual a 768px)
     const isMobile = window.innerWidth <= 768;
 
-    // 2. Definimos la escala: 
-    // Si es móvil, usamos 0.25 (o el valor que prefieras para que sea "más grandecito")
-    // Si es PC, mantenemos tu 0.10 original
+
     const initialScale = isMobile ? 0.25 : 0.10;
 
     gsap.set(logoElement.value, { scale: initialScale })
@@ -66,10 +63,8 @@ onMounted(() => {
 }
 
 .splash-logo {
-    /* Le damos un tamaño nativo gigantesco para que el navegador renderice en alta calidad */
     width: 5000px;
     max-width: none;
-    /* Vital: Evita que el navegador la auto-reduzca */
     will-change: transform;
 }
 </style>

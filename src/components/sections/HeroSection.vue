@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 // Referencias para las animaciones con GSAP
 const heroSection = ref<HTMLElement | null>(null)
@@ -12,80 +15,59 @@ const heroBtn = ref<HTMLElement | null>(null)
 const waveLeft = ref<HTMLElement | null>(null)
 const waveRight = ref<HTMLElement | null>(null)
 
-onMounted(() => {
-    // 1. Configuramos el estado inicial de los elementos del contenido
-    gsap.set([navElements.value, brandLogo.value, brandTextImgs.value, heroDescription.value, heroBtn.value], {
-        opacity: 0,
-        y: 30
-    })
+// 1. Movemos la función fuera de onMounted para que sea global y esté limpia
+const scrollToContact = () => {
+    const contactSection = document.getElementById('contacto');
+    if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+}
 
-    // 2. Línea de tiempo para la entrada principal (Navbar, Logo, Textos)
+onMounted(() => {
+    // Definimos los elementos a animar
+    const elements = [navElements.value, brandLogo.value, brandTextImgs.value, heroDescription.value, heroBtn.value];
+
+    // 1. Configuramos el estado inicial
+    gsap.set(elements, { opacity: 0, y: 30 })
+
+    // 2. Línea de tiempo principal
     const tl = gsap.timeline({ delay: 1.5 })
 
-    tl.to(navElements.value, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power2.out'
-    })
-        .to([brandLogo.value, brandTextImgs.value], {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            stagger: 0.2,
-            ease: 'power2.out'
-        }, "-=0.4")
-        .to([heroDescription.value, heroBtn.value], {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            stagger: 0.2,
-            ease: 'power2.out'
-        }, "-=0.4")
+    tl.to(navElements.value, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+        .to([brandLogo.value, brandTextImgs.value], { opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: 'power2.out' }, "-=0.4")
+        .to([heroDescription.value, heroBtn.value], { opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: 'power2.out' }, "-=0.4")
 
-    /* =========================================================
-       🚀 MAGIA RESPONSIVA CON GSAP MATCHMEDIA
-       ========================================================= */
+    // 3. Magia Responsiva
     const mm = gsap.matchMedia()
 
-    // CONDICIÓN A: Escritorio (Pantallas mayores a 768px) -> Movimiento suave y lento
     mm.add("(min-width: 769px)", () => {
-        gsap.to(waveLeft.value, {
-            x: '30vw',
-            duration: 3,
-            ease: 'sine.inOut',
-            yoyo: true,
-            repeat: -1
-        })
-
-        gsap.to(waveRight.value, {
-            x: '-30vw',
-            duration: 3,
-            ease: 'sine.inOut',
-            yoyo: true,
-            repeat: -1
-        })
+        gsap.to(waveLeft.value, { x: '30vw', duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })
+        gsap.to(waveRight.value, { x: '-30vw', duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })
     })
 
-    // CONDICIÓN B: Móviles (Pantallas de 768px o menos) -> ¡EL DOBLE DE RÁPIDO!
     mm.add("(max-width: 768px)", () => {
-        gsap.to(waveLeft.value, {
-            x: '30vw',
-            duration: 2, // Bajamos de 6s a 3s para acelerar el ritmo
-            ease: 'sine.inOut',
-            yoyo: true,
-            repeat: -1
-        })
+        gsap.to(waveLeft.value, { x: '30vw', duration: 2, ease: 'sine.inOut', yoyo: true, repeat: -1 })
+        gsap.to(waveRight.value, { x: '-30vw', duration: 2, ease: 'sine.inOut', yoyo: true, repeat: -1 })
 
-        gsap.to(waveRight.value, {
-            x: '-30vw',
-            duration: 2, // Bajamos de 7s a 3.5s
-            ease: 'sine.inOut',
-            yoyo: true,
-            repeat: -1
-        })
+        // Animación en móvil
+        gsap.fromTo(elements,
+            { opacity: 0, y: 50 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: heroSection.value,
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    toggleActions: 'restart reverse restart reverse'
+                }
+            }
+        )
     })
-})
+}) 
 </script>
 
 <template>
@@ -117,7 +99,7 @@ onMounted(() => {
                 Transforma tu sonrisa con tratamientos personalizados y tecnología de vanguardia
             </p>
 
-            <button ref="heroBtn" class="btn-outline main-cta">
+            <button @click="scrollToContact" class="btn-outline main-cta">
                 Reserva tu Cita
             </button>
         </div>
@@ -210,7 +192,7 @@ onMounted(() => {
 }
 
 .main-logo {
-    width: 140px;
+    width: 180px;
     height: auto;
     object-fit: contain;
 }
@@ -222,7 +204,7 @@ onMounted(() => {
 }
 
 .img-name {
-    width: 420px;
+    width: 550px;
     height: auto;
     object-fit: contain;
 }
@@ -230,7 +212,7 @@ onMounted(() => {
 .hero-description {
     color: #ffffff;
     font-family: "Poppins", sans-serif;
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: 300;
     letter-spacing: 0.5px;
     max-width: 800px;
@@ -263,8 +245,8 @@ onMounted(() => {
 }
 
 .main-cta {
-    padding: 0.8rem 2.5rem;
-    font-size: 0.95rem;
+    padding: 1.2rem 3rem;
+    font-size: 1.1rem;
     letter-spacing: 0.5px;
 }
 
@@ -308,7 +290,7 @@ onMounted(() => {
     }
 
     .main-logo {
-        width: 100px;
+        width: 130px;
         height: auto;
     }
 
@@ -317,12 +299,12 @@ onMounted(() => {
     }
 
     .img-name {
-        width: 280px;
+        width: 320px;
         height: auto;
     }
 
     .hero-description {
-        font-size: 0.9rem;
+        font-size: 1rem;
         padding: 0 10px;
         margin-bottom: 2rem;
     }
