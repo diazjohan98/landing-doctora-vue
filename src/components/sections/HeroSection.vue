@@ -134,7 +134,7 @@ onMounted(() => {
     height: 100vh;
     box-sizing: border-box;
     overflow: hidden;
-    background-image: url('@/assets/hero-bg.jpg');
+    background-image: url('@/assets/hero-bg.JPG');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
