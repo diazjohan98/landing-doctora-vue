@@ -9,14 +9,14 @@ const progressBar = ref<HTMLElement | null>(null) // 🚀 Nueva referencia
 useServicesAnimations(servicesSection, progressBar)
 
 const services = ref([
-    { id: 1, title: 'DISEÑO DE SONRISA', desc: 'Proceso personalizado para crear una sonrisa perfecta que se ajuste a tu rostro.', icon: '/icons/tooth-1.svg' },
-    { id: 2, title: 'ENDODONCIA', desc: 'Tratamiento de conductos para salvar dientes dañados por caries o infecciones.', icon: '/icons/tooth-2.svg' },
-    { id: 3, title: 'BLANQUEAMIENTO DENTAL', desc: 'Tratamiento para aclarar el color de tus dientes y lograr una sonrisa más brillante.', icon: '/icons/tooth-3.svg' },
-    { id: 4, title: 'ORTODONCIA ESTÉTICA', desc: 'Corrección de la alineación dental para una sonrisa armoniosa y atractiva.', icon: '/icons/tooth-4.svg' },
-    { id: 5, title: 'ODONTOLOGÍA GENERAL', desc: 'Cuidados preventivos y tratamientos básicos para mantener la salud bucal.', icon: '/icons/tooth-5.svg' },
-    { id: 6, title: 'LENTES CERÁMICOS', desc: 'Carillas de porcelana que mejoran el aspecto de tus dientes para un acabado impecable.', icon: '/icons/tooth-6.svg' },
-    { id: 7, title: 'CIRUGÍA ORAL', desc: 'Procedimientos quirúrgicos para corregir problemas dentales complejos.', icon: '/icons/tooth-7.svg' },
-    { id: 8, title: 'IMPLANTES DENTALES', desc: 'Reemplazo de dientes perdidos con implantes permanentes que lucen y funcionan como dientes naturales.', icon: '/icons/tooth-8.svg' }
+    { id: 1, title: 'DISEÑO DE SONRISA', desc: 'Proceso personalizado para crear una sonrisa perfecta que se ajuste a tu rostro.', icon: '../../icons/tooth-1.png' },
+    { id: 2, title: 'ENDODONCIA', desc: 'Tratamiento de conductos para salvar dientes dañados por caries o infecciones.', icon: '/icons/tooth-2.png' },
+    { id: 3, title: 'BLANQUEAMIENTO DENTAL', desc: 'Tratamiento para aclarar el color de tus dientes y lograr una sonrisa más brillante.', icon: '/icons/tooth-3.png' },
+    { id: 4, title: 'ORTODONCIA ESTÉTICA', desc: 'Corrección de la alineación dental para una sonrisa armoniosa y atractiva.', icon: '/icons/tooth-4.png' },
+    { id: 5, title: 'ODONTOLOGÍA GENERAL', desc: 'Cuidados preventivos y tratamientos básicos para mantener la salud bucal.', icon: '/icons/tooth-5.png' },
+    { id: 6, title: 'LENTES CERÁMICOS', desc: 'Carillas de porcelana que mejoran el aspecto de tus dientes para un acabado impecable.', icon: '/icons/tooth-6.png' },
+    { id: 7, title: 'CIRUGÍA ORAL', desc: 'Procedimientos quirúrgicos para corregir problemas dentales complejos.', icon: '/icons/tooth-7.png' },
+    { id: 8, title: 'IMPLANTES DENTALES', desc: 'Reemplazo de dientes perdidos con implantes permanentes que lucen y funcionan como dientes naturales.', icon: '/icons/tooth-8.png' }
 ])
 
 const chunkedServices = computed(() => {
@@ -76,8 +76,8 @@ const chunkedServices = computed(() => {
 
 .gold-subtitle {
     color: #d4af37;
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 400;
     margin-bottom: 20px;
 }
 
@@ -132,15 +132,14 @@ const chunkedServices = computed(() => {
 }
 
 .service-icon {
-    width: 45px;
+    width: 60px;
     height: auto;
-    filter: invert(75%) sepia(41%) saturate(415%) hue-rotate(352deg) brightness(96%) contrast(87%);
 }
 
 .service-title {
     color: #d4af37;
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 1.2rem;
+    font-weight: 400;
     margin-bottom: 15px;
     letter-spacing: 0.5px;
 }
