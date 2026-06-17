@@ -52,7 +52,7 @@ onMounted(() => {
     mm.add("(min-width: 769px)", () => {
         gsap.to(waveLeft.value, {
             x: '30vw',
-            duration: 1,
+            duration: 3,
             ease: 'sine.inOut',
             yoyo: true,
             repeat: -1
@@ -60,7 +60,7 @@ onMounted(() => {
 
         gsap.to(waveRight.value, {
             x: '-30vw',
-            duration: 1,
+            duration: 3,
             ease: 'sine.inOut',
             yoyo: true,
             repeat: -1
@@ -71,7 +71,7 @@ onMounted(() => {
     mm.add("(max-width: 768px)", () => {
         gsap.to(waveLeft.value, {
             x: '30vw',
-            duration: 3, // Bajamos de 6s a 3s para acelerar el ritmo
+            duration: 2, // Bajamos de 6s a 3s para acelerar el ritmo
             ease: 'sine.inOut',
             yoyo: true,
             repeat: -1
@@ -79,7 +79,7 @@ onMounted(() => {
 
         gsap.to(waveRight.value, {
             x: '-30vw',
-            duration: 3.5, // Bajamos de 7s a 3.5s
+            duration: 2, // Bajamos de 7s a 3.5s
             ease: 'sine.inOut',
             yoyo: true,
             repeat: -1
