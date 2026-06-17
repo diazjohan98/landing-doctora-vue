@@ -4,9 +4,16 @@ import { ref } from 'vue'
 
 
 
-const aboutWrapper = ref < HTMLElement | null > (null);
+const aboutWrapper = ref<HTMLElement | null>(null);
 
 useAboutAnimations(aboutWrapper)
+
+const scrollToContact = () => {
+    const contactSection = document.getElementById('contacto');
+    if (contactSection) {
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+}
 
 </script>
 
@@ -50,7 +57,7 @@ useAboutAnimations(aboutWrapper)
                     </div>
                 </div>
 
-                <button class="btn-gold animate-on-scroll">
+                <button @click="scrollToContact" class="btn-gold animate-on-scroll">
                     Programa tu cita
                 </button>
 
