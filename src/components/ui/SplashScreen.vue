@@ -8,7 +8,15 @@ const logoElement = ref<HTMLElement | null>(null)
 onMounted(() => {
     document.body.style.overflow = 'hidden'
 
-    gsap.set(logoElement.value, { scale: 0.10 })
+    // 1. Detectamos si es un dispositivo móvil (menor o igual a 768px)
+    const isMobile = window.innerWidth <= 768;
+
+    // 2. Definimos la escala: 
+    // Si es móvil, usamos 0.25 (o el valor que prefieras para que sea "más grandecito")
+    // Si es PC, mantenemos tu 0.10 original
+    const initialScale = isMobile ? 0.25 : 0.10;
+
+    gsap.set(logoElement.value, { scale: initialScale })
 
     const tl = gsap.timeline({
         onComplete: () => {
@@ -20,7 +28,7 @@ onMounted(() => {
     })
 
     tl.to(logoElement.value, {
-        scale: 2, // Ahora solo crece al doble de su tamaño GIGANTE real, no 80 veces. ¡Cero pixelado!
+        scale: 1.5, // Mantenemos el zoom final controlado
         opacity: 0,
         duration: 1.2,
         ease: 'power3.inOut',
