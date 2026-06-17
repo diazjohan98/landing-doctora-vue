@@ -52,7 +52,7 @@ onMounted(() => {
     mm.add("(min-width: 769px)", () => {
         gsap.to(waveLeft.value, {
             x: '30vw',
-            duration: 6,
+            duration: 1,
             ease: 'sine.inOut',
             yoyo: true,
             repeat: -1
@@ -60,7 +60,7 @@ onMounted(() => {
 
         gsap.to(waveRight.value, {
             x: '-30vw',
-            duration: 7,
+            duration: 1,
             ease: 'sine.inOut',
             yoyo: true,
             repeat: -1
