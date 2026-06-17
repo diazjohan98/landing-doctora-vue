@@ -2,6 +2,8 @@
 import { RouterView } from "vue-router";
 import SplashScreen from '@/components/ui/SplashScreen.vue'
 import HomeView from "./views/HomeView.vue";
+import Footer from "./components/layout/Footer.vue";
+import WhatsAppWidget from "./components/ui/WhatsAppWidget.vue";
 </script>
 
 <template>
@@ -11,6 +13,9 @@ import HomeView from "./views/HomeView.vue";
     <HomeView />
     <RouterView />
   </main>
+
+  <Footer />
+  <WhatsAppWidget />
 </template>
 
 <style>

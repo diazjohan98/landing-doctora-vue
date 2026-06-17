@@ -5,8 +5,49 @@ import { useContactAnimations } from '@/composables/useContactAnimations'
 const contactSection = ref<HTMLElement | null>(null)
 const { testimonials, currentIndex } = useContactAnimations(contactSection)
 
-const submitForm = () => {
-    console.log("Formulario enviado")
+const formData = ref({
+    name: '',
+    email: '',
+    phone: ''
+})
+
+const isSubmitting = ref(false)
+const showSuccess = ref(false)
+
+const submitForm = async () => {
+    isSubmitting.value = true
+
+    try {
+        const response = await fetch("https://formsubmit.co/ajax/dra.mariafernanda.br23@gmail.com", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                Nombre: formData.value.name,
+                Correo: formData.value.email,
+                Teléfono: formData.value.phone,
+                _subject: "🦷 ¡Nueva solicitud de cita desde la página web!",
+                _template: "table"
+            })
+        })
+
+        if (response.ok) {
+            showSuccess.value = true
+            formData.value = { name: '', email: '', phone: '' }
+
+            setTimeout(() => { showSuccess.value = false }, 5000)
+        } else {
+            throw new Error("Error en la respuesta del servidor")
+        }
+
+    } catch (error) {
+        console.error("Error al enviar el formulario:", error)
+        alert("Hubo un problema al enviar tu solicitud. Por favor intenta contactarnos por redes sociales.")
+    } finally {
+        isSubmitting.value = false
+    }
 }
 </script>
 
@@ -15,29 +56,35 @@ const submitForm = () => {
 
         <div class="contact-content">
 
-            <!-- COLUMNA IZQUIERDA: FORMULARIO -->
             <div class="form-container">
                 <h3 class="form-title">PROGRAMA TU CITA HOY</h3>
 
                 <form @submit.prevent="submitForm" class="appointment-form">
-                    <input type="text" placeholder="Nombre" required class="form-input" />
-                    <input type="email" placeholder="Correo Electronico" required class="form-input" />
-                    <input type="tel" placeholder="Telefono" required class="form-input" />
+                    <input type="text" v-model="formData.name" placeholder="Nombre" required class="form-input"
+                        :disabled="isSubmitting" />
+                    <input type="email" v-model="formData.email" placeholder="Correo Electrónico" required
+                        class="form-input" :disabled="isSubmitting" />
+                    <input type="tel" v-model="formData.phone" placeholder="Teléfono" required class="form-input"
+                        :disabled="isSubmitting" />
 
-                    <button type="submit" class="btn-submit">Quiero mi cita</button>
+                    <button type="submit" class="btn-submit" :disabled="isSubmitting">
+                        {{ isSubmitting ? 'Enviando...' : 'Quiero mi cita' }}
+                    </button>
+
+                    <transition name="fade">
+                        <p v-if="showSuccess" class="success-message">
+                            ¡Gracias! Hemos recibido tus datos. Te contactaremos pronto.
+                        </p>
+                    </transition>
                 </form>
 
                 <p class="form-footer-text">Nuestros Clientes nos prefieren</p>
             </div>
-
-            <!-- COLUMNA DERECHA: TESTIMONIOS -->
             <div class="testimonial-container">
-                <!-- Estrellas (Puedes reemplazar por SVG si prefieres) -->
                 <div class="stars">
                     ★★★★★
                 </div>
 
-                <!-- Carrusel de texto con transición de Vue -->
                 <div class="testimonial-track">
                     <transition name="fade" mode="out-in">
                         <div class="testimonial-slide" :key="currentIndex">
@@ -61,8 +108,6 @@ const submitForm = () => {
     justify-content: center;
     align-items: center;
     min-height: 80vh;
-
-    /* 🚀 Fondo con Gradiente Oscuro para dar contraste al texto y formulario */
     background-image: linear-gradient(rgba(15, 15, 15, 0.88), rgba(15, 15, 15, 0.88)), url('/casos/hero-bg.jpg');
     background-size: cover;
     background-position: center;
@@ -86,7 +131,7 @@ const submitForm = () => {
 
 .form-title {
     color: #ffffff;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 700;
     margin-bottom: 30px;
     letter-spacing: 1px;
@@ -103,10 +148,10 @@ const submitForm = () => {
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 6px;
-    padding: 15px 20px;
+    padding: 16px 22px;
     color: #ffffff;
     font-family: 'Poppins', sans-serif;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     transition: all 0.3s ease;
 }
 
@@ -125,14 +170,14 @@ const submitForm = () => {
     color: #000000;
     border: none;
     border-radius: 6px;
-    padding: 15px 0;
-    font-size: 1rem;
+    padding: 16px 0;
+    font-size: 1.15rem;
     font-weight: 600;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 15px;
     width: max-content;
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-left: 45px;
+    padding-right: 45px;
     transition: all 0.3s ease;
     align-self: center;
 }
@@ -146,7 +191,7 @@ const submitForm = () => {
 .form-footer-text {
     color: #d4af37;
     font-style: italic;
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     margin-top: 40px;
     text-align: center;
 }
@@ -201,6 +246,19 @@ const submitForm = () => {
     transform: translateY(-10px);
 }
 
+.success-message {
+    color: #4CAF50;
+    /* Un verde suave para indicar éxito */
+    text-align: center;
+    font-size: 0.95rem;
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+.btn-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
 
 @media (max-width: 768px) {
     .contact-content {
