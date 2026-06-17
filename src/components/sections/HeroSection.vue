@@ -1,83 +1,27 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ref } from 'vue'
+import { useHeroAnimations } from '@/composables/useHeroAnimations'
 
-gsap.registerPlugin(ScrollTrigger)
-
-// Referencias para las animaciones con GSAP
 const heroSection = ref<HTMLElement | null>(null)
-const navElements = ref<HTMLElement | null>(null)
-const brandLogo = ref<HTMLElement | null>(null)
-const brandTextImgs = ref<HTMLElement | null>(null)
-const heroDescription = ref<HTMLElement | null>(null)
-const heroBtn = ref<HTMLElement | null>(null)
-const waveLeft = ref<HTMLElement | null>(null)
-const waveRight = ref<HTMLElement | null>(null)
 
-// 1. Movemos la función fuera de onMounted para que sea global y esté limpia
+useHeroAnimations(heroSection)
+
 const scrollToContact = () => {
     const contactSection = document.getElementById('contacto');
     if (contactSection) {
         contactSection.scrollIntoView({ behavior: 'smooth' });
     }
 }
-
-onMounted(() => {
-    // Definimos los elementos a animar
-    const elements = [navElements.value, brandLogo.value, brandTextImgs.value, heroDescription.value, heroBtn.value];
-
-    // 1. Configuramos el estado inicial
-    gsap.set(elements, { opacity: 0, y: 30 })
-
-    // 2. Línea de tiempo principal
-    const tl = gsap.timeline({ delay: 1.5 })
-
-    tl.to(navElements.value, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
-        .to([brandLogo.value, brandTextImgs.value], { opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: 'power2.out' }, "-=0.4")
-        .to([heroDescription.value, heroBtn.value], { opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: 'power2.out' }, "-=0.4")
-
-    // 3. Magia Responsiva
-    const mm = gsap.matchMedia()
-
-    mm.add("(min-width: 769px)", () => {
-        gsap.to(waveLeft.value, { x: '30vw', duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })
-        gsap.to(waveRight.value, { x: '-30vw', duration: 3, ease: 'sine.inOut', yoyo: true, repeat: -1 })
-    })
-
-    mm.add("(max-width: 768px)", () => {
-        gsap.to(waveLeft.value, { x: '30vw', duration: 2, ease: 'sine.inOut', yoyo: true, repeat: -1 })
-        gsap.to(waveRight.value, { x: '-30vw', duration: 2, ease: 'sine.inOut', yoyo: true, repeat: -1 })
-
-        // Animación en móvil
-        gsap.fromTo(elements,
-            { opacity: 0, y: 50 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                stagger: 0.2,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: heroSection.value,
-                    start: 'top 80%',
-                    end: 'bottom 20%',
-                    toggleActions: 'restart reverse restart reverse'
-                }
-            }
-        )
-    })
-}) 
 </script>
 
 <template>
     <section ref="heroSection" class="hero-container">
         <div class="hero-overlay"></div>
 
-        <div ref="waveLeft" class="ambient-wave wave-left"></div>
-        <div ref="waveRight" class="ambient-wave wave-right"></div>
+        <div class="ambient-wave wave-left"></div>
+        <div class="ambient-wave wave-right"></div>
 
-        <nav ref="navElements" class="hero-nav">
+        <nav class="hero-nav">
             <ul class="nav-links">
                 <li><a href="#sobre-mi">Sobre mi</a></li>
                 <li><a href="#servicios">Servicios</a></li>
@@ -88,14 +32,14 @@ onMounted(() => {
 
         <div class="hero-content">
             <div class="brand-block">
-                <img ref="brandLogo" src="../../assets/LogoDiente.png" alt="Logo MF" class="main-logo" />
+                <img src="../../assets/LogoDiente.png" alt="Logo MF" class="main-logo" />
 
-                <div ref="brandTextImgs" class="text-images-wrapper">
+                <div class="text-images-wrapper">
                     <img src="../../assets/LogoDecripcion.png" alt="Dra. María Fernanda Bernal R." class="img-name" />
                 </div>
             </div>
 
-            <p ref="heroDescription" class="hero-description">
+            <p class="hero-description">
                 Transforma tu sonrisa con tratamientos personalizados y tecnología de vanguardia
             </p>
 
@@ -107,9 +51,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* =========================================
-   CONTENEDOR PRINCIPAL Y FONDO
-   ========================================= */
 .hero-container {
     position: relative;
     width: 100%;
@@ -134,9 +75,7 @@ onMounted(() => {
     z-index: 1;
 }
 
-/* =========================================
-   NAVBAR
-   ========================================= */
+
 .hero-nav {
     position: relative;
     z-index: 3;
@@ -168,9 +107,7 @@ onMounted(() => {
     color: #d4af37;
 }
 
-/* =========================================
-   CONTENIDO CENTRAL
-   ========================================= */
+
 .hero-content {
     position: relative;
     z-index: 3;
@@ -219,9 +156,6 @@ onMounted(() => {
     margin-bottom: 2.5rem;
 }
 
-/* =========================================
-   BOTONES
-   ========================================= */
 .btn-outline {
     background: transparent;
     color: #ffffff;
@@ -250,9 +184,7 @@ onMounted(() => {
     letter-spacing: 0.5px;
 }
 
-/* =========================================
-   ESTILOS DE ONDAS (ESCRITORIO)
-   ========================================= */
+
 .ambient-wave {
     position: absolute;
     top: 0;
@@ -273,9 +205,6 @@ onMounted(() => {
     right: -20vw;
 }
 
-/* =========================================
-   RESPONSIVE BÁSICO & CONFIG ONDAS MÓVIL
-   ========================================= */
 @media (max-width: 768px) {
     .hero-nav {
         justify-content: center;

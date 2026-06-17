@@ -3,6 +3,7 @@ import { RouterView } from "vue-router";
 import SplashScreen from '@/components/ui/SplashScreen.vue'
 import HeroSection from "./components/sections/HeroSection.vue";
 import AboutSection from "./components/sections/AboutSection.vue";
+import ResultsSection from "./components/sections/ResultsSection.vue";
 </script>
 
 
@@ -12,6 +13,7 @@ import AboutSection from "./components/sections/AboutSection.vue";
   <SplashScreen />
   <HeroSection />
   <AboutSection />
+  <ResultsSection />
   <!-- El resto de tu aplicación -->
   <main class="app-content">
     <RouterView />
