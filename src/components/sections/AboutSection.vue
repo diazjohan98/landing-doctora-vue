@@ -8,31 +8,99 @@ gsap.registerPlugin(ScrollTrigger)
 const aboutWrapper = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-    // 1. Forzamos un pequeño delay para asegurar que las imágenes carguen y el DOM esté listo
     setTimeout(() => {
         ScrollTrigger.refresh();
     }, 500);
 
-    const elements = aboutWrapper.value?.querySelectorAll('.animate-on-scroll');
-
-    if (elements && elements.length > 0) {
-        gsap.fromTo(elements,
-            { opacity: 0, y: 80 },
+    /* =========================================================
+       🎬 ANIMACIÓN 1: LA FOTO DE LA DOCTORA (Global)
+       ========================================================= */
+    const imageElement = aboutWrapper.value?.querySelector('.about-image');
+    if (imageElement) {
+        gsap.fromTo(imageElement,
+            { opacity: 0, scale: 1.15, filter: 'blur(10px)' },
             {
-                opacity: 1,
-                y: 0,
-                duration: 1.2,
-                stagger: 0.25,
-                ease: 'power3.out',
-                scrollTrigger: {
-                    trigger: aboutWrapper.value,
-                    start: 'top 85%', // Un poco más abajo para dar tiempo a cargar
-                    end: 'bottom 20%',
-                    toggleActions: 'restart reverse restart reverse',
-                    lazy: false,
-                }
+                opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.5, ease: 'power3.out',
+                scrollTrigger: { trigger: aboutWrapper.value, start: 'top 85%', end: 'bottom 20%', toggleActions: 'restart reverse restart reverse', lazy: false }
             }
         );
+    }
+
+    /* =========================================================
+       🚀 ANIMACIÓN 2: TEXTOS Y BOTÓN (Excluimos las tarjetas)
+       ========================================================= */
+    // Usamos :not(.card) para no animar las tarjetas aquí, porque las manejaremos con matchMedia
+    const textElements = aboutWrapper.value?.querySelectorAll('.animate-on-scroll:not(.card)');
+    if (textElements && textElements.length > 0) {
+        gsap.fromTo(textElements,
+            { opacity: 0, y: 80, rotationX: -15 },
+            {
+                opacity: 1, y: 0, rotationX: 0, duration: 1.2, stagger: 0.15, ease: 'expo.out',
+                scrollTrigger: { trigger: aboutWrapper.value, start: 'top 85%', end: 'bottom 20%', toggleActions: 'restart reverse restart reverse', lazy: false }
+            }
+        );
+    }
+
+    /* =========================================================
+       ✨ ANIMACIÓN 3: EFECTO FLOTANTE DE LOS ICONOS (Global)
+       ========================================================= */
+    const icons = aboutWrapper.value?.querySelectorAll('.icon');
+    if (icons && icons.length > 0) {
+        gsap.to(icons, { y: -10, duration: 2.5, yoyo: true, repeat: -1, ease: 'sine.inOut', stagger: 0.4 });
+    }
+
+    const btnGold = aboutWrapper.value?.querySelector('.btn-gold');
+    if (btnGold) {
+        gsap.to(btnGold, {
+            // Doble sombra: una intensa cerca del borde (0.8) y otra amplia para iluminar el fondo (0.3)
+            boxShadow: '0 0 15px rgba(212, 175, 55, 0.8), 0 0 30px rgba(212, 175, 55, 0.3)',
+            scale: 1.03, // Micro-crecimiento: el botón físicamente palpita un 3%
+            duration: 1.2, // Lo bajamos de 1.5 a 1.2 para que el latido tenga un ritmo más activo
+            yoyo: true,
+            repeat: -1,
+            ease: 'sine.inOut'
+        });
+    }
+    /* =========================================================
+       📱 MAGIA RESPONSIVA PARA LAS TARJETAS CON MATCHMEDIA
+       ========================================================= */
+    const mm = gsap.matchMedia();
+    const cards = aboutWrapper.value?.querySelectorAll('.card');
+
+    if (cards && cards.length > 0) {
+        // ESCRITORIO (> 768px): Las 3 tarjetas entran en cascada con el scroll
+        mm.add("(min-width: 769px)", () => {
+            gsap.fromTo(cards,
+                { opacity: 0, y: 80, rotationX: -15 },
+                {
+                    opacity: 1, y: 0, rotationX: 0, duration: 1.2, stagger: 0.2, ease: 'expo.out',
+                    scrollTrigger: { trigger: aboutWrapper.value, start: 'top 85%', end: 'bottom 20%', toggleActions: 'restart reverse restart reverse' }
+                }
+            );
+        });
+
+        // MÓVIL (<= 768px): Aparecen y desaparecen automáticamente una por una (Bucle infinito)
+        mm.add("(max-width: 768px)", () => {
+            // Aseguramos que todas empiecen invisibles y fijas en su sitio
+            gsap.set(cards, { opacity: 0, y: 0 });
+
+            // Creamos una línea de tiempo infinita
+            const tl = gsap.timeline({ repeat: -1 });
+
+            cards.forEach((card) => {
+                tl.to(card, {
+                    opacity: 1,
+                    duration: 0.8,
+                    ease: 'power2.inOut'
+                }) // Aparece suavemente
+                    .to({}, { duration: 2.5 }) // Se queda quieta 2.5 segundos para que la lean
+                    .to(card, {
+                        opacity: 0,
+                        duration: 0.8,
+                        ease: 'power2.inOut'
+                    }); // Se desvanece suavemente en su mismo sitio
+            });
+        });
     }
 })
 </script>
@@ -266,19 +334,30 @@ onMounted(() => {
     }
 
     .cards-grid {
-        grid-template-columns: 1fr;
-        gap: 25px;
+        display: grid;
+        width: 100%;
+        max-width: 320px;
+        /* 🚀 MOVIDO AQUÍ: El contenedor ahora mide lo que mide la tarjeta */
+        margin: 0 auto 30px auto;
+        /* 🚀 LA MAGIA: 'auto' a los lados centra todo el bloque por completo */
     }
 
     .card {
+        grid-area: 1 / 1;
+        width: 180%;
         padding: 30px;
+        opacity: 0;
+        z-index: 1;
+        box-sizing: border-box;
     }
 
     .btn-gold {
         width: 100%;
-        /* Botón ancho en móvil para mejor click */
+        max-width: 320px;
         padding: 18px 0;
         font-size: 1.1rem;
+        margin: 20px auto 0 auto;
+        /* Centramos tmbién el botón */
     }
 }
 </style>
