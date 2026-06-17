@@ -68,6 +68,9 @@ const { cases, currentIndex, goToSlide } = useResultsCarousel(resultsSection)
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    font-family: 'Poppins';
+    font-weight: 600;
+
 }
 
 .section-header {
@@ -217,6 +220,10 @@ const { cases, currentIndex, goToSlide } = useResultsCarousel(resultsSection)
 @media (max-width: 768px) {
     .carousel-container {
         padding: 30px 20px;
+    }
+
+    .main-title[data-v-d994d936] {
+        font-size: 1.3rem;
     }
 
     .slide {
