@@ -1,31 +1,19 @@
 <script setup>
 import { RouterView } from "vue-router";
 import SplashScreen from '@/components/ui/SplashScreen.vue'
-import HeroSection from "./components/sections/HeroSection.vue";
-import AboutSection from "./components/sections/AboutSection.vue";
-import ResultsSection from "./components/sections/ResultsSection.vue";
+import HomeView from "./views/HomeView.vue";
 </script>
 
-
-
 <template>
-  <!-- El componente que acabamos de crear -->
   <SplashScreen />
-  <HeroSection />
-  <AboutSection />
-  <ResultsSection />
-  <!-- El resto de tu aplicación -->
+
   <main class="app-content">
+    <HomeView />
     <RouterView />
   </main>
 </template>
 
-
-
-
-
 <style>
-/* Estilos globales básicos */
 html {
   scroll-behavior: smooth;
 }

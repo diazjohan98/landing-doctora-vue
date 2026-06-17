@@ -24,8 +24,8 @@ const scrollToContact = () => {
         <nav class="hero-nav">
             <ul class="nav-links">
                 <li><a href="#sobre-mi">Sobre mi</a></li>
-                <li><a href="#servicios">Servicios</a></li>
                 <li><a href="#testimonios">Testimonios</a></li>
+                <li><a href="#servicios">Servicios</a></li>
             </ul>
             <a href="#contacto" class="btn-outline nav-btn">Agenda Tu Cita</a>
         </nav>
