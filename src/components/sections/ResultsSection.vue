@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useResultsCarousel } from '@/composables/useResultsCarousel'
 
 const resultsSection = ref<HTMLElement | null>(null)
-
 const { cases, currentIndex, goToSlide } = useResultsCarousel(resultsSection)
+
+// 🚀 ESTADO PARA EL SWITCH EN MÓVIL
+const activeView = ref<'antes' | 'despues'>('antes')
+
+// 🚀 Cuando el carrusel cambia de paciente automáticamente o al hacer clic, 
+// reiniciamos el switch para que siempre empiece mostrando el "Antes".
+watch(currentIndex, () => {
+    activeView.value = 'antes'
+})
 </script>
 
 <template>
@@ -18,16 +26,34 @@ const { cases, currentIndex, goToSlide } = useResultsCarousel(resultsSection)
         <div class="carousel-container">
             <p class="carousel-subtitle">Resultados que hablan por si solos...</p>
 
+            <!-- 🚀 NUEVO: SWITCH TIPO iOS (Oculto en Escritorio, Visible en Móvil) -->
+            <div class="mobile-toggle-container">
+                <div class="toggle-switch" :data-active="activeView">
+                    <div class="toggle-pill"></div>
+                    <button class="toggle-btn" :class="{ active: activeView === 'antes' }"
+                        @click="activeView = 'antes'">
+                        Antes
+                    </button>
+                    <button class="toggle-btn" :class="{ active: activeView === 'despues' }"
+                        @click="activeView = 'despues'">
+                        Después
+                    </button>
+                </div>
+            </div>
+
             <div class="carousel-track">
                 <transition name="fade" mode="out-in">
-                    <!-- Tu HTML del slide queda intacto -->
+
                     <div class="slide" :key="currentIndex">
-                        <div class="image-wrapper">
-                            <span class="img-label">Antes</span>
-                            <img :src="cases[currentIndex].beforeImg" alt="Antes" loading="lazy" />
+
+                        <!-- Contenedor ANTES -->
+                        <div class="image-wrapper" :class="{ 'active-view': activeView === 'antes' }">
+                            <span class="img-label desktop-only">Antes</span>
+                            <img :src="cases[currentIndex].beforeImg" alt="Antes" />
                         </div>
 
-                        <div class="arrow-separator">
+                        <!-- Flecha separadora (Oculta en Móvil) -->
+                        <div class="arrow-separator desktop-only">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round">
@@ -35,11 +61,14 @@ const { cases, currentIndex, goToSlide } = useResultsCarousel(resultsSection)
                             </svg>
                         </div>
 
-                        <div class="image-wrapper">
-                            <span class="img-label">Después</span>
-                            <img :src="cases[currentIndex].afterImg" alt="Después" loading="lazy" />
+                        <!-- Contenedor DESPUÉS -->
+                        <div class="image-wrapper" :class="{ 'active-view': activeView === 'despues' }">
+                            <span class="img-label desktop-only">Después</span>
+                            <img :src="cases[currentIndex].afterImg" alt="Después" />
                         </div>
+
                     </div>
+
                 </transition>
             </div>
 
@@ -52,6 +81,7 @@ const { cases, currentIndex, goToSlide } = useResultsCarousel(resultsSection)
                     :class="{ active: index === currentIndex }" @click="goToSlide(index)"
                     aria-label="Cambiar slide"></button>
             </div>
+
         </div>
     </section>
 </template>
@@ -66,63 +96,47 @@ const { cases, currentIndex, goToSlide } = useResultsCarousel(resultsSection)
     background-image: linear-gradient(rgba(10, 10, 10, 0.85), rgba(10, 10, 10, 0.85)), url('/casos/despues-1.jpg');
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
     background-attachment: fixed;
-    font-family: 'Poppins';
-    font-weight: 600;
-
 }
 
 .section-header {
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
 }
 
 .gold-subtitle {
     color: #d4af37;
-    font-weight: 500;
+    font-size: 1.2rem;
+    font-weight: 600;
     margin-bottom: 15px;
-    font-size: 1.1rem;
 }
 
 .main-title {
     color: #ffffff;
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    font-size: 2.2rem;
+    font-weight: 700;
 }
 
 .carousel-container {
-    background: rgba(0, 0, 0, 0.4);
-
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 20px;
-    padding: 40px 60px;
-    max-width: 900px;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    max-width: 1000px;
+    background: rgba(20, 20, 20, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
 }
 
 .carousel-subtitle {
     color: #d4af37;
-    margin-bottom: 40px;
     font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 30px;
 }
 
-
-.carousel-track {
-    width: 100%;
-    min-height: 250px;
-    display: flex;
-    justify-content: center;
+.mobile-toggle-container {
+    display: none;
 }
 
 .slide {
@@ -137,15 +151,23 @@ const { cases, currentIndex, goToSlide } = useResultsCarousel(resultsSection)
     position: relative;
     border-radius: 12px;
     overflow: hidden;
-    width: 45%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background-color: #1a1a1a;
 }
 
 .image-wrapper img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
     display: block;
-    border-radius: 12px;
-    transition: transform 0.3s ease;
+}
+
+.carousel-track {
+    min-height: 350px;
+    display: flex;
+    align-items: center;
 }
 
 .img-label {
@@ -153,94 +175,177 @@ const { cases, currentIndex, goToSlide } = useResultsCarousel(resultsSection)
     top: 15px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    color: white;
-    padding: 4px 20px;
-    border-radius: 30px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    padding: 5px 15px;
+    border-radius: 20px;
     font-size: 0.85rem;
-    z-index: 2;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    z-index: 10;
 }
 
 .arrow-separator {
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: #d4af37;
 }
 
-
 .treatment-text {
-    color: #aaaaaa;
-    margin-top: 40px;
-    font-size: 1rem;
-    text-align: center;
+    color: #ffffff;
+    font-size: 1.1rem;
+    margin-top: 30px;
 }
 
 .treatment-highlight {
-    color: #ffffff;
+    font-weight: 700;
     font-style: italic;
 }
 
 .dots-container {
     display: flex;
-    gap: 10px;
-    margin-top: 30px;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 25px;
 }
 
 .dot {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    border: 1px solid #aaaaaa;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
     cursor: pointer;
     transition: all 0.3s ease;
-    padding: 0;
 }
 
 .dot.active {
-    background: #ffffff;
-    border-color: #ffffff;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    background: #d4af37;
+    transform: scale(1.3);
 }
 
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 0.5s ease;
+    transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
 }
 
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
+    transform: scale(0.98);
+}
+
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    animation: smoothRender 0.5s ease-out forwards;
+}
+
+@keyframes smoothRender {
+    0% {
+        filter: blur(10px);
+        transform: scale(1.05);
+    }
+
+    100% {
+        filter: blur(0);
+        transform: scale(1);
+    }
 }
 
 
 @media (max-width: 768px) {
+
     .carousel-container {
-        padding: 30px 20px;
-    }
-
-    .main-title[data-v-d994d936] {
-        font-size: 1.3rem;
-    }
-
-    .slide {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .image-wrapper {
-        width: 100%;
-    }
-
-    .arrow-separator svg {
-        transform: rotate(90deg);
+        padding: 25px 15px;
     }
 
     .main-title {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
+    }
+
+    .carousel-subtitle {
+        font-size: 1.0rem;
+        font-weight: 400;
+    }
+
+    .desktop-only {
+        display: none !important;
+    }
+
+    .mobile-toggle-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 25px;
+    }
+
+    .toggle-switch {
+        display: flex;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 30px;
+        padding: 4px;
+        width: 240px;
+        position: relative;
+    }
+
+    .toggle-btn {
+        flex: 1;
+        padding: 10px 0;
+        background: transparent;
+        border: none;
+        color: #ffffff;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        z-index: 2;
+        transition: color 0.3s ease;
+    }
+
+    .toggle-btn.active {
+        color: #000000;
+    }
+
+    .toggle-pill {
+        position: absolute;
+        top: 4px;
+        bottom: 4px;
+        left: 4px;
+        width: calc(50% - 4px);
+        background: #d4af37;
+        border-radius: 26px;
+        z-index: 1;
+        transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .toggle-switch[data-active="despues"] .toggle-pill {
+        transform: translateX(100%);
+    }
+
+    .slide {
+        display: grid;
+        grid-template-areas: "overlap";
+        gap: 0;
+    }
+
+    .image-wrapper {
+        grid-area: overlap;
+        opacity: 0;
+        transition: opacity 0.4s ease-in-out;
+        pointer-events: none;
+    }
+
+    .image-wrapper.active-view {
+        opacity: 1;
+        pointer-events: auto;
+        z-index: 2;
+    }
+
+    .treatment-text {
+        font-size: 1rem;
+        margin-top: 20px;
     }
 }
 </style>
