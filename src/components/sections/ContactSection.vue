@@ -383,5 +383,13 @@ const submitForm = async () => {
     .quote-text {
         font-size: 1.2rem;
     }
+
+    .google-rating[data-v-0042f24d] {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 25px;
+        justify-content: center;
+    }
 }
 </style>
